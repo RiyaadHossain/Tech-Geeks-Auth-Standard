@@ -1,51 +1,76 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import GoogleLogo from "../../Assets/Image/google.svg";
-import { createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { app } from "../../Firebase/Firebase.init";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const auth = getAuth(app)
+  const auth = getAuth(app);
   const provider = new GoogleAuthProvider();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState({value: "", error:""});
+  const [email, setEmail] = useState({ value: "", error: "" });
+  const [password, setPassword] = useState({ value: "", error: "" });
+  const [confirmPassword, setConfirmPassword] = useState({
+    value: "",
+    error: "",
+  });
   const onEmailBlur = (e) => {
-    setEmail(e.target.value);
+    const email = e.target.value;
+    if (/\S+@\S+\.\S+/.test(email)) {
+      setEmail({ value: email, error: "" });
+    } else {
+      setEmail({ value: "", error: "Invalid Email" });
+    }
   };
   const onPasswordBlur = (e) => {
-    setPassword(e.target.value);
+    const password = e.target.value;
+    if (password.length > 6) {
+      setPassword({ value: password, error: "" });
+    } else {
+      setPassword({ value: "", error: "Too Short" });
+    }
   };
-  
-  const onConfirmPasswordBlur = e => {
-    setConfirmPassword(e.target.vlaue)
-    console.log(confirmPassword);
-  }
-  
-  const emailSignUP = (e) => {
-    e.preventDefault()
-    
-    createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-     
-    const user = userCredential.user;
-    console.log(user);
-    navigate('/')
-  })
-  .catch((error) => {
-    const errorMessage = error.message;
-    console.log(errorMessage);
-  });
-  }
 
-  const googleSignUp = e => {
-    e.preventDefault()
-    
+  const onConfirmPasswordBlur = (e) => {
+    const confirmPassword = e.target.value;
+    if (confirmPassword === password.value) {
+      setConfirmPassword({ value: confirmPassword, error: "" });
+    } else {
+      setConfirmPassword({ value: "", error: "Password didn't match" });
+    }
+  };
+
+  const emailSignUP = (e) => {
+    e.preventDefault();
+
+    if (
+      email.value &&
+      password.value &&
+      confirmPassword.value === password.value
+    ) {
+      createUserWithEmailAndPassword(auth, email.value, password.value)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          navigate("/");
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+        });
+    }
+  };
+
+  const googleSignUp = (e) => {
+    e.preventDefault();
+
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
-        navigate('/')
+        navigate("/");
         console.log(user);
       })
       .catch((error) => {
@@ -62,14 +87,26 @@ const Signup = () => {
           <div className="input-field">
             <label htmlFor="email">Email</label>
             <div className="input-wrapper">
-              <input onBlur={onEmailBlur} type="email" name="email" id="email" />
+              <input
+                onBlur={onEmailBlur}
+                type="email"
+                name="email"
+                id="email"
+              />
             </div>
+            {email?.error && <p className="error">⚠️ {email.error}</p>}
           </div>
           <div className="input-field">
             <label htmlFor="password">Password</label>
             <div className="input-wrapper">
-              <input onBlur={onPasswordBlur} type="password" name="password" id="password" />
+              <input
+                onBlur={onPasswordBlur}
+                type="password"
+                name="password"
+                id="password"
+              />
             </div>
+            {password?.error && <p className="error">⚠️ {password.error}</p>}
           </div>
           <div className="input-field">
             <label htmlFor="confirm-password">Confirm Password</label>
@@ -81,6 +118,9 @@ const Signup = () => {
                 onBlur={onConfirmPasswordBlur}
               />
             </div>
+            {confirmPassword?.error && (
+              <p className="error">⚠️ {confirmPassword.error}</p>
+            )}
           </div>
           <button type="submit" className="auth-form-submit">
             Sign Up
