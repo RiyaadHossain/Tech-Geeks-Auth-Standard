@@ -23,6 +23,7 @@ const Signup = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
+        navigate('/')
         console.log(user);
       })
       .catch((error) => {
