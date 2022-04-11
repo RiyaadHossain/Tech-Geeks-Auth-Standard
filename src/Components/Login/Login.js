@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./AuthForm.css";
 import GoogleLogo from "../../Assets/Image/google.svg";
 import { useNavigate } from "react-router-dom";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import auth from "../../Firebase/Firebase.init";
 
 const Login = () => {
@@ -12,14 +12,26 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   const onEmailBlur = (e) => {
-    setEmail(e.target.vlaue);
+    setEmail(e.target.value);
   };
   const onPasswordBlur = (e) => {
-    setPassword(e.target.vlaue);
+    setPassword(e.target.value);
   };
 
   const emailLogIn = e => {
-    const email = e.target.email.value
+    e.preventDefault()
+    signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      console.log(user);
+      navigate('/')
+    })
+    .catch((error) => {
+      
+      const errorMessage = error.message;
+      console.log(errorMessage);
+    });
+  
   }
 
   const googleSignIn = e => {
@@ -40,17 +52,17 @@ const Login = () => {
     <div className='auth-form-container '>
       <div className='auth-form'>
         <h1>Login</h1>
-        <form>
+        <form onSubmit={emailLogIn}>
           <div className='input-field'>
             <label htmlFor='email'>Email</label>
             <div className='input-wrapper'>
-              <input type='text' name='email' id='email' />
+              <input onBlur={onEmailBlur} type='text' name='email' id='email' />
             </div>
           </div>
           <div className='input-field'>
             <label htmlFor='password'>Password</label>
             <div className='input-wrapper'>
-              <input type='password' name='password' id='password' />
+              <input onBlur={onPasswordBlur} type='password' name='password' id='password' />
             </div>
           </div>
           <button type='submit' className='auth-form-submit'>

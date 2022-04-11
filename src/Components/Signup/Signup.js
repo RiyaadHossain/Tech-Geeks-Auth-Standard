@@ -26,14 +26,12 @@ const Signup = () => {
   const emailSignUP = (e) => {
     e.preventDefault()
     
-    console.log(password);
-    console.log(email);
     createUserWithEmailAndPassword(auth, email, password)
   .then((userCredential) => {
      
     const user = userCredential.user;
     console.log(user);
-    console.log(userCredential);
+    navigate('/')
   })
   .catch((error) => {
     const errorMessage = error.message;
