@@ -1,21 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import GoogleLogo from "../../Assets/Image/google.svg";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import auth from "../../Firebase/Firebase.init";
+import { createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { app } from "../../Firebase/Firebase.init";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const auth = getAuth(app)
   const provider = new GoogleAuthProvider();
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-
-  // const onEmailBlur = (e) => {
-  //   setEmail(e.target.vlaue);
-  // };
-  // const onPasswordBlur = (e) => {
-  //   setPassword(e.target.vlaue);
-  // };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState({value: "", error:""});
+  const onEmailBlur = (e) => {
+    setEmail(e.target.value);
+  };
+  const onPasswordBlur = (e) => {
+    setPassword(e.target.value);
+  };
+  
+  const onConfirmPasswordBlur = e => {
+    setConfirmPassword(e.target.vlaue)
+    console.log(confirmPassword);
+  }
+  
+  const emailSignUP = (e) => {
+    e.preventDefault()
+    
+    console.log(password);
+    console.log(email);
+    createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+     
+    const user = userCredential.user;
+    console.log(user);
+    console.log(userCredential);
+  })
+  .catch((error) => {
+    const errorMessage = error.message;
+    console.log(errorMessage);
+  });
+  }
 
   const googleSignUp = e => {
     e.preventDefault()
@@ -36,17 +60,17 @@ const Signup = () => {
     <div className="auth-form-container ">
       <div className="auth-form">
         <h1>Sign Up</h1>
-        <form>
+        <form onSubmit={emailSignUP}>
           <div className="input-field">
             <label htmlFor="email">Email</label>
             <div className="input-wrapper">
-              <input type="email" name="email" id="email" />
+              <input onBlur={onEmailBlur} type="email" name="email" id="email" />
             </div>
           </div>
           <div className="input-field">
             <label htmlFor="password">Password</label>
             <div className="input-wrapper">
-              <input type="password" name="password" id="password" />
+              <input onBlur={onPasswordBlur} type="password" name="password" id="password" />
             </div>
           </div>
           <div className="input-field">
@@ -56,6 +80,7 @@ const Signup = () => {
                 type="password"
                 name="confirmPassword"
                 id="confirm-password"
+                onBlur={onConfirmPasswordBlur}
               />
             </div>
           </div>

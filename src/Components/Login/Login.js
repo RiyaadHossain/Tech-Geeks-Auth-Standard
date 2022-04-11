@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./AuthForm.css";
 import GoogleLogo from "../../Assets/Image/google.svg";
 import { useNavigate } from "react-router-dom";
@@ -8,15 +8,19 @@ import auth from "../../Firebase/Firebase.init";
 const Login = () => {
   const navigate = useNavigate();
   const provider = new GoogleAuthProvider();
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  // const onEmailBlur = (e) => {
-  //   setEmail(e.target.vlaue);
-  // };
-  // const onPasswordBlur = (e) => {
-  //   setPassword(e.target.vlaue);
-  // };
+  const onEmailBlur = (e) => {
+    setEmail(e.target.vlaue);
+  };
+  const onPasswordBlur = (e) => {
+    setPassword(e.target.vlaue);
+  };
+
+  const emailLogIn = e => {
+    const email = e.target.email.value
+  }
 
   const googleSignIn = e => {
     e.preventDefault()
