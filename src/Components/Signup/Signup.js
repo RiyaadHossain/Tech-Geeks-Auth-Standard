@@ -38,6 +38,7 @@ const Signup = () => {
 
   const onConfirmPasswordBlur = (e) => {
     const confirmPassword = e.target.value;
+    
     if (confirmPassword === password.value) {
       setConfirmPassword({ value: confirmPassword, error: "" });
     } else {
@@ -47,6 +48,16 @@ const Signup = () => {
 
   const emailSignUP = (e) => {
     e.preventDefault();
+
+    if (email.value === '') {
+      setEmail({value: "", error:"Email is Required"})
+    }
+    if (password.value === '') {
+      setPassword({value: "", error:"Password is Required"})
+    }
+    if (confirmPassword.value === '') {
+      setConfirmPassword({value: "", error:"Confirm Password is Required"})
+    }
 
     if (
       email.value &&
