@@ -4,6 +4,7 @@ import GoogleLogo from "../../Assets/Image/google.svg";
 import { useNavigate } from "react-router-dom";
 import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import auth from "../../Firebase/Firebase.init";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,11 +25,13 @@ const Login = () => {
     .then((userCredential) => {
       const user = userCredential.user;
       console.log(user);
+      toast.success("Logged In")
       navigate('/')
     })
     .catch((error) => {
       
       const errorMessage = error.message;
+      toast.error("Something went wrong")
       console.log(errorMessage);
     });
   

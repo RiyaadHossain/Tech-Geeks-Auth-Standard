@@ -8,6 +8,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { app } from "../../Firebase/Firebase.init";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -67,10 +68,15 @@ const Signup = () => {
       createUserWithEmailAndPassword(auth, email.value, password.value)
         .then((userCredential) => {
           const user = userCredential.user;
+          toast.success("Account Created")
           navigate("/");
         })
         .catch((error) => {
           const errorMessage = error.message;
+          if (errorMessage.includes('email-already-in-use')) {
+            toast.error("Already Exist")            
+          }
+          toast.error(errorMessage)            
         });
     }
   };
