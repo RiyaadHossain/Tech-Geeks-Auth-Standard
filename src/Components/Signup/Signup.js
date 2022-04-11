@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import GoogleLogo from "../../Assets/Image/google.svg";
 
+
 const Signup = () => {
   const navigate = useNavigate();
 
